@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false,
     },
-    full_name:{
+    fullName:{
         type:String,
         max:30,
         required:true,
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
 
     },
     dob:{
-        type:Date,
+        type:String,
         required:true,
         default:'',
     },
@@ -43,11 +43,11 @@ const userSchema = new mongoose.Schema({
         required:true,
         default:'',
     },
-    issue:{
-        type:Date,
+    issueDate:{
+        type:String,
     },
-    exp:{
-        type:Date,
+    expiryDate:{
+        type:String,
     },
     auth:{
         type:String,
@@ -71,4 +71,4 @@ const userSchema = new mongoose.Schema({
     timestamps:true,
 })
 
-module.exports = mongoose.model("User", userSchema)
+module.exports = mongoose.model("Users", userSchema)
