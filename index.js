@@ -1,14 +1,14 @@
 const express = require("express");
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 const mongoose = require("mongoose");
-const User = require('./src/models/user')
+const User = require("./src/models/user");
 const dotenv = require("dotenv");
 const port = process.env.PORT || 5000;
 
 dotenv.config();
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(cors());
 
 const uri = process.env.MONGO_URI;
 
@@ -33,7 +33,6 @@ const verifyJWT = (req, res, next) => {
   });
 };
 
-
 // app.post("/jwt", (req, res) => {
 //   const user = req.body;
 //   const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
@@ -42,30 +41,29 @@ const verifyJWT = (req, res, next) => {
 //   res.send({ token });
 // });
 
-app.get("/", (req, res) =>{
-  res.json("Hello from streamlined server")
-})
+app.get("/", (req, res) => {
+  res.json("Hello from streamlined server");
+});
 
 app.post("/users", async (req, res) => {
   console.log("Enter this route");
-  const user = await User.findOne({email: req.body.email});
+  const user = await User.findOne({ email: req.body.email });
   console.log("Before check newUser");
   if (user) {
     return res.send({ message: "User already exist" });
   }
   console.log("after checking if user new");
-  const newUser = new User(req.body)
+  const newUser = new User(req.body);
   const result = await newUser.save();
   console.log("Insert data");
   res.send(result);
 });
 
-app.get("/user/:id", async(req, res)=>{
-  const email = 'test@gmail.com'
-  const user = await User.findOne({email: email })
-  res.status(200).json(user)
-})
-
+app.get("/users/:email", async (req, res) => {
+  const email = req.params.email;
+  const user = await User.findOne({ email: email });
+  res.status(200).json(user);
+});
 
 // app.post("/users", async (req, res) => {
 //   const user = req.body;
@@ -78,7 +76,6 @@ app.get("/user/:id", async(req, res)=>{
 //   res.send(result);
 // });
 
-
 app.listen(port, () => {
-    console.log("Streamline server is running");
-  });
+  console.log("Streamline server is running");
+});
