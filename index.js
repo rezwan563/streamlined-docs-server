@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const User = require("./src/models/user");
+const Profile = require("./src/models/profile");
 const dotenv = require("dotenv");
 const port = process.env.PORT || 5000;
 
@@ -45,36 +46,38 @@ app.get("/", (req, res) => {
   res.json("Hello from streamlined server");
 });
 
-app.post("/users", async (req, res) => {
-  console.log("Enter this route");
-  const user = await User.findOne({ email: req.body.email });
-  console.log("Before check newUser");
-  if (user) {
-    return res.send({ message: "User already exist" });
-  }
-  console.log("after checking if user new");
-  const newUser = new User(req.body);
-  const result = await newUser.save();
-  console.log("Insert data");
-  res.send(result);
-});
-
 app.get("/users/:email", async (req, res) => {
   const email = req.params.email;
   const user = await User.findOne({ email: email });
   res.status(200).json(user);
 });
 
-// app.post("/users", async (req, res) => {
-//   const user = req.body;
-//   const query = { email: user.email };
-//   const existingUser = await userCollection.findOne(query);
-//   if (existingUser) {
-//     return res.send({ message: "User already exist" });
-//   }
-//   const result = await userCollection.insertOne(user);
-//   res.send(result);
-// });
+app.post("/userprofiles", async (req, res) => {
+  try {
+    const newProfile = new Profile(req.body);
+    const savedProfile = await newProfile.save();
+    res.status(201).json(savedProfile);
+  } catch (error) {
+    res.status(400).json({ message: "Error creating profile", error });
+  }
+});
+
+app.put("/userprofiles/:email", async (req, res) => {
+  try {
+    const email = req.params.email;
+    const profileData = req.body;
+    const updatedProfile = await Profile.findOneAndUpdate(
+      { email },
+      profileData,
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(updatedProfile);
+  } catch (error) {
+    res.status(400).json({ message: "Error updating profile", error });
+  }
+});
 
 app.listen(port, () => {
   console.log("Streamline server is running");
