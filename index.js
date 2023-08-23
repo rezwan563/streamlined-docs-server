@@ -2,10 +2,12 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
+const Edit = require("./src/models/edit");
 const User = require("./src/models/user");
-const Profile = require("./src/models/profile");
+const Details = require("./src/models/details");
 const dotenv = require("dotenv");
 const port = process.env.PORT || 5000;
+const jwt = require("jsonwebtoken");
 
 dotenv.config();
 app.use(express.json());
@@ -34,13 +36,26 @@ const verifyJWT = (req, res, next) => {
   });
 };
 
-// app.post("/jwt", (req, res) => {
-//   const user = req.body;
-//   const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-//     expiresIn: "1h",
-//   });
-//   res.send({ token });
-// });
+app.post("/jwt", (req, res) => {
+  const user = req.body;
+  const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "1h",
+  });
+  res.send({ token });
+});
+
+app.post("/users", async (req, res) => {
+  const user = req.body;
+  console.log(user);
+  const newUser = await User.findOne({ email: user.email });
+  if (newUser) {
+    return res.send({ message: "User already exists" });
+  }
+  const loggedUser = new User(user);
+  console.log(loggedUser);
+  const result = await loggedUser.save();
+  res.send(result);
+});
 
 app.get("/", (req, res) => {
   res.json("Hello from streamlined server");
@@ -51,31 +66,59 @@ app.get("/users/:email", async (req, res) => {
   const user = await User.findOne({ email: email });
   res.status(200).json(user);
 });
+app.get("/details/:email", async (req, res) => {
+  const email = req.params.email;
+  const details = await Details.findOne({ email: email });
+  res.status(200).json(details);
+});
+app.get("/edits/:email", async (req, res) => {
+  const email = req.params.email;
+  const edit = await Edit.findOne({ email: email });
+  res.status(200).json(edit);
+});
 
-app.post("/userprofiles", async (req, res) => {
+app.post("/edits", async (req, res) => {
   try {
-    const newProfile = new Profile(req.body);
-    const savedProfile = await newProfile.save();
-    res.status(201).json(savedProfile);
+    const { email } = req.body;
+    let edit = await Edit.findOne({ email });
+
+    if (edit) {
+      edit.set(req.body);
+    } else {
+      edit = new Edit(req.body);
+    }
+
+    const savedEdit = await edit.save();
+
+    res.status(200).json(savedEdit);
   } catch (error) {
-    res.status(400).json({ message: "Error creating profile", error });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-app.put("/userprofiles/:email", async (req, res) => {
+app.put("/edits/:email", async (req, res) => {
+  const { email } = req.params;
+  const updatedProfileData = req.body;
+
   try {
-    const email = req.params.email;
-    const profileData = req.body;
-    const updatedProfile = await Profile.findOneAndUpdate(
+    const updatedProfile = await EditModel.findOneAndUpdate(
       { email },
-      profileData,
-      {
-        new: true,
-      }
+      updatedProfileData,
+      { new: true }
     );
-    res.status(200).json(updatedProfile);
+
+    if (updatedProfile) {
+      res.status(200).json({
+        message: "Profile updated successfully",
+        data: updatedProfile,
+      });
+    } else {
+      res.status(404).json({ message: "Profile not found" });
+    }
   } catch (error) {
-    res.status(400).json({ message: "Error updating profile", error });
+    res
+      .status(500)
+      .json({ message: "An error occurred", error: error.message });
   }
 });
 
