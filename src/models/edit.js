@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
+// const User = require("./user");
 
-const ProfileSchema = new mongoose.Schema({
+const EditSchema = new mongoose.Schema({
+  // userRef: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   email: String,
   fullName: String,
   nationalIdNumber: String,
@@ -17,6 +19,4 @@ const ProfileSchema = new mongoose.Schema({
   photoUrl: String,
 });
 
-const Profile = mongoose.model("Profile", ProfileSchema);
-
-module.exports = Profile;
+module.exports = mongoose.model("Edit", EditSchema);
