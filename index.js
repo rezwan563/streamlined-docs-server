@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 const User = require('./src/models/user')
 const dotenv = require("dotenv");
+const EditUser = require('./src/models/editprofile')
 const port = process.env.PORT || 5000;
 
 dotenv.config();
@@ -47,16 +48,12 @@ app.get("/", (req, res) =>{
 })
 
 app.post("/users", async (req, res) => {
-  console.log("Enter this route");
   const user = await User.findOne({email: req.body.email});
-  console.log("Before check newUser");
   if (user) {
     return res.send({ message: "User already exist" });
   }
-  console.log("after checking if user new");
   const newUser = new User(req.body)
   const result = await newUser.save();
-  console.log("Insert data");
   res.send(result);
 });
 
@@ -64,6 +61,12 @@ app.get("/user/:id", async(req, res)=>{
   const email = 'test@gmail.com'
   const user = await User.findOne({email: email })
   res.status(200).json(user)
+})
+
+app.put("/users/:email", async(req, res) =>{
+  const email = req.params.id;
+  const updateUser = await User.findone({email});
+
 })
 
 

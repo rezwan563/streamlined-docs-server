@@ -1,9 +1,11 @@
 const mongoose = require('mongoose')
 
-const userSchema = new mongoose.Schema({
+const editSchema = new mongoose.Schema({
     username:{
         type:String,
-        default:'',
+        min:4,
+        max:20,
+        unique:true,
     },
     email:{
         type:String,
@@ -61,4 +63,4 @@ const userSchema = new mongoose.Schema({
     timestamps:true,
 })
 
-module.exports = mongoose.model("Users", userSchema)
+module.exports = mongoose.model("Useredits", editSchema)
