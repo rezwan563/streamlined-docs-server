@@ -15,7 +15,7 @@ router.post("/", async(req,res)=>{
 // get profile info
 router.get("/:useremail", async(req,res)=>{
     try{
-        const profileData = await Profiles.findOne({userEmail: req.body.email})
+        const profileData = await Profiles.findOne({userEmail: req.params.useremail})
     }catch(err){
         res.status(500).json(err)
     }
