@@ -2,9 +2,9 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
-const Edit = require("./src/models/edit");
-const User = require("./src/models/user");
-const Details = require("./src/models/details");
+const userRoute = require("./src/routes/user")
+const profileRoute = require("./src/routes/profile")
+const pendingProfileRoute = require("./src/routes/pendingProfile")
 const dotenv = require("dotenv");
 const port = process.env.PORT || 5000;
 const jwt = require("jsonwebtoken");
@@ -16,6 +16,11 @@ app.use(cors());
 const uri = process.env.MONGO_URI;
 
 mongoose.connect(uri).then(() => console.log("connected to mongodb"));
+
+
+app.use("/api/users", userRoute)
+app.use("/api/profiles", profileRoute)
+app.use("/api/pending_profiles", pendingProfileRoute)
 
 const verifyJWT = (req, res, next) => {
   const authorization = req.headers.authorization;
@@ -44,83 +49,11 @@ app.post("/jwt", (req, res) => {
   res.send({ token });
 });
 
-app.post("/users", async (req, res) => {
-  const user = req.body;
-  console.log(user);
-  const newUser = await User.findOne({ email: user.email });
-  if (newUser) {
-    return res.send({ message: "User already exists" });
-  }
-  const loggedUser = new User(user);
-  console.log(loggedUser);
-  const result = await loggedUser.save();
-  res.send(result);
-});
 
 app.get("/", (req, res) => {
   res.json("Hello from streamlined server");
 });
 
-app.get("/users/:email", async (req, res) => {
-  const email = req.params.email;
-  const user = await User.findOne({ email: email });
-  res.status(200).json(user);
-});
-app.get("/details/:email", async (req, res) => {
-  const email = req.params.email;
-  const details = await Details.findOne({ email: email });
-  res.status(200).json(details);
-});
-app.get("/edits/:email", async (req, res) => {
-  const email = req.params.email;
-  const edit = await Edit.findOne({ email: email });
-  res.status(200).json(edit);
-});
-
-app.post("/edits", async (req, res) => {
-  try {
-    const { email } = req.body;
-    let edit = await Edit.findOne({ email });
-
-    if (edit) {
-      edit.set(req.body);
-    } else {
-      edit = new Edit(req.body);
-    }
-
-    const savedEdit = await edit.save();
-
-    res.status(200).json(savedEdit);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-app.put("/edits/:email", async (req, res) => {
-  const { email } = req.params;
-  const updatedProfileData = req.body;
-
-  try {
-    const updatedProfile = await EditModel.findOneAndUpdate(
-      { email },
-      updatedProfileData,
-      { new: true }
-    );
-
-    if (updatedProfile) {
-      res.status(200).json({
-        message: "Profile updated successfully",
-        data: updatedProfile,
-      });
-    } else {
-      res.status(404).json({ message: "Profile not found" });
-    }
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "An error occurred", error: error.message });
-  }
-});
 
 app.listen(port, () => {
   console.log("Streamline server is running");
