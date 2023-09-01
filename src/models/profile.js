@@ -3,10 +3,8 @@ const Users = require("../models/user")
 
 const profileSchema = new mongoose.Schema(
   { 
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Users",
-        required:true,
+    userId:{
+        type:String
     },
     userEmail:String,
     personal_data: [
@@ -27,7 +25,7 @@ const profileSchema = new mongoose.Schema(
       {
         education_bn: String,
         occupation: String,
-        mobile_number: Number,
+        mobile_number: String,
         religion: String,
         driving_license_number: Number,
         passport_number: Number,
@@ -54,12 +52,12 @@ const profileSchema = new mongoose.Schema(
   }
 );
 
-profileSchema.pre("save", async(next) =>{
-    const user = await Users.findById(this.user)
-    if(user){
-        this.userEmail = user.email;
-    }
-    next();
-})
+// profileSchema.pre("save", async(next) =>{
+//     const user = await Users.findById(this.user)
+//     if(user){
+//         this.userEmail = user.email;
+//     }
+//     next();
+// })
 
 module.exports = mongoose.model("Profiles", profileSchema);

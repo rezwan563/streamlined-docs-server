@@ -7,13 +7,13 @@ router.post("/", async(req,res)=>{
     try{
         const newProfileData = new Profiles(profileData);
         const saveProfileData = await newProfileData.save()
-        res.status(201).json("Profile data saved successfully")
+        res.status(201).json(saveProfileData)
     }catch(err){
-        res.status(500).json(err)
+        res.status(500).json({error: err.message})
     }
 })
 // get profile info
-router.get("/:userEmail", async(req,res)=>{
+router.get("/:useremail", async(req,res)=>{
     try{
         const profileData = await Profiles.findOne({userEmail: req.body.email})
     }catch(err){
