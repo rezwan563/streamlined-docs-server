@@ -13,6 +13,7 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 
+
 const uri = process.env.MONGO_URI;
 
 mongoose.connect(uri).then(() => console.log("connected to mongodb"));
