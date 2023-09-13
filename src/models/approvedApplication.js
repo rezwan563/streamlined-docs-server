@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const Users = require("../models/user");
 
-const pendingProfileSchema = new mongoose.Schema(
+const approvedProfileSchema = new mongoose.Schema(
   {
     userEmail: {
       type: String,
@@ -51,11 +50,7 @@ const pendingProfileSchema = new mongoose.Schema(
     },
     isPending: {
       type: Boolean,
-      default: true,
-    },
-    isRequestChange:{
-      type:Boolean,
-      default:false,
+      default: false,
     },
   },
 
@@ -64,4 +59,4 @@ const pendingProfileSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("pendingProfiles", pendingProfileSchema);
+module.exports = mongoose.model("approvedApplication", approvedProfileSchema);
