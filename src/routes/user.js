@@ -47,4 +47,24 @@ router.delete("/:email", async(req,res)=>{
   }
 })
 
+// check if user is admin
+router.get("/check-admin/:email", async (req, res) => {
+  try {
+    // Find the user by email in MongoDB
+    const user = await Users.findOne({ email: req.params.email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the user is an admin
+    const isAdmin = user.isAdmin;
+
+    res.status(200).json({ isAdmin });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+
 module.exports = router;

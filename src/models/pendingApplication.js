@@ -1,17 +1,10 @@
 const mongoose = require("mongoose");
-const Users = require("../models/user");
+const Users = require("./user");
 
-const pendingProfileSchema = new mongoose.Schema(
+const pendingApplicationSchema = new mongoose.Schema(
   {
-    profile: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Profiles",
-      require: true,
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Users",
-      required: true,
+    userEmail: {
+      type: String,
     },
     personal_data: [
       {
@@ -56,9 +49,17 @@ const pendingProfileSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isPending:{
+    isPending: {
+      type: Boolean,
+      default: true,
+    },
+    isRequestChange:{
       type:Boolean,
-      default:false
+      default:false,
+    },
+    isRejected:{
+      type:Boolean,
+      default:false,
     },
   },
 
@@ -67,4 +68,4 @@ const pendingProfileSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("pendingProfiles", pendingProfileSchema);
+module.exports = mongoose.model("pendingApplications", pendingApplicationSchema);

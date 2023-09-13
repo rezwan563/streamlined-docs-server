@@ -4,7 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const userRoute = require("./src/routes/user")
 const profileRoute = require("./src/routes/profile")
-const pendingProfileRoute = require("./src/routes/pendingProfile")
+const pendingApplication = require("./src/routes/pendingApplication")
 const dotenv = require("dotenv");
 const port = process.env.PORT || 5000;
 const jwt = require("jsonwebtoken");
@@ -21,7 +21,7 @@ mongoose.connect(uri).then(() => console.log("connected to mongodb"));
 
 app.use("/api/users", userRoute)
 app.use("/api/profiles", profileRoute)
-app.use("/api/pending_profiles", pendingProfileRoute)
+app.use("/api/pending_profiles", pendingApplication)
 
 const verifyJWT = (req, res, next) => {
   const authorization = req.headers.authorization;
@@ -57,5 +57,5 @@ app.get("/", (req, res) => {
 
 
 app.listen(port, () => {
-  console.log("Streamline server is running");
+  console.log("Streamline server is running on port: " +port);
 });
