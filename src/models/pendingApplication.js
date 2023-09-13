@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const Users = require("../models/user");
+const Users = require("./user");
 
-const pendingProfileSchema = new mongoose.Schema(
+const pendingApplicationSchema = new mongoose.Schema(
   {
     userEmail: {
       type: String,
@@ -64,4 +64,4 @@ const pendingProfileSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("pendingProfiles", pendingProfileSchema);
+module.exports = mongoose.model("pendingApplications", pendingApplicationSchema);
