@@ -3,15 +3,8 @@ const Users = require("../models/user");
 
 const pendingProfileSchema = new mongoose.Schema(
   {
-    profile: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Profiles",
-      require: true,
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Users",
-      required: true,
+    userEmail: {
+      type: String,
     },
     personal_data: [
       {
@@ -56,9 +49,9 @@ const pendingProfileSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isPending:{
-      type:Boolean,
-      default:false
+    isPending: {
+      type: Boolean,
+      default: false,
     },
   },
 

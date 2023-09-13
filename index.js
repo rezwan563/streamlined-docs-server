@@ -56,5 +56,5 @@ app.get("/", (req, res) => {
 
 
 app.listen(port, () => {
-  console.log("Streamline server is running");
+  console.log("Streamline server is running on port: " +port);
 });
