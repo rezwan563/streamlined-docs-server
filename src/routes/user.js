@@ -60,14 +60,6 @@ router.get("/check_admin/:email", async (req, res) => {
     const isAdmin = user.isAdmin;
     console.log(isAdmin);
     res.status(200).json({ isAdmin });
-    if (isAdmin) {
-      // TODO: change localhost with live site link
-      console.log("65 line");
-      return res.redirect("http://localhost:5173/dashboard/admin");
-    } else {
-      console.log("68 line");
-      return res.redirect("http://localhost:5173/dashboard/user");
-    }
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
