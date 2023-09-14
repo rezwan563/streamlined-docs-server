@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const profile = require("../models/profile");
 const Profiles = require("../models/profile");
 
 // create profile info
@@ -16,6 +17,10 @@ router.post("/", async (req, res) => {
 router.get("/:email", async (req, res) => {
   try {
     const profileData = await Profiles.findOne({ userEmail: req.params.email });
+    if(!profileData){
+      const isProfileAvailable = false;
+      return res.json(isProfileAvailable)
+    }
     res.status(200).send(profileData);
   } catch (err) {
     res.status(500).json(err);
