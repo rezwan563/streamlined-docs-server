@@ -19,52 +19,58 @@ router.post("/", async (req, res) => {
 
 // get user
 router.get("/:email", async (req, res) => {
-  const user = await Users.findOne({email: req.params.email});
+  const user = await Users.findOne({ email: req.params.email });
   res.send(user);
 });
 
 // update user
 router.put("/:email", async (req, res) => {
-  try{
-    const user = await Users.findOne({email: req.params.email}) 
+  try {
+    const user = await Users.findOne({ email: req.params.email });
     const id = user._id;
     const updatedDoc = req.body;
-    const updatedUser = await Users.findByIdAndUpdate(id, updatedDoc, {new:true})
-    res.send(updatedUser)
-  }catch(err){
-    res.status(500).json({error: err.message})
+    const updatedUser = await Users.findByIdAndUpdate(id, updatedDoc, {
+      new: true,
+    });
+    res.send(updatedUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 // delete user
-router.delete("/:email", async(req,res)=>{
-  try{
-    const user = await Users.findOne({email: req.params.email})
-    const id = user._id;
-    await Users.findByIdAndDelete(id)
-    res.status(200).json("Successfully deleted the user")
-  }catch(err){
-    res.status(500).json(err)
-  }
-})
-
-// check if user is admin
-router.get("/check-admin/:email", async (req, res) => {
+router.delete("/:email", async (req, res) => {
   try {
-    // Find the user by email in MongoDB
     const user = await Users.findOne({ email: req.params.email });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Check if the user is an admin
-    const isAdmin = user.isAdmin;
-
-    res.status(200).json({ isAdmin });
-  } catch (error) {
-    res.status(500).json(error);
+    const id = user._id;
+    await Users.findByIdAndDelete(id);
+    res.status(200).json("Successfully deleted the user");
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
+// check if user is admin
+router.get("/check_admin/:email", async (req, res) => {
+  try {
+    const user = await Users.findOne({ email: req.params.email });
+    const id = user._id;
+    // if (!user) {
+    //   return res.status(404).json({ message: "User not found" });
+    // }
+    const isAdmin = user.isAdmin;
+    console.log(isAdmin);
+    res.status(200).json({ isAdmin });
+    if (isAdmin) {
+      // TODO: change localhost with live site link
+      console.log("65 line");
+      return res.redirect("http://localhost:5173/dashboard/admin");
+    } else {
+      console.log("68 line");
+      return res.redirect("http://localhost:5173/dashboard/user");
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 module.exports = router;
