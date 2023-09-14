@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
     max: 50,
     unique: true,
   },
+  photoURL:{
+    type:String,
+  },
   isAdmin: {
     type: Boolean,
     default: false,
