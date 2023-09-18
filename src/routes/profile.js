@@ -61,8 +61,4 @@ router.get("/:email?", async (req, res) => {
   
 });
 
-
-
-
-
 module.exports = router;

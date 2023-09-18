@@ -1,3 +1,3 @@
 .env
 node_modules
-MONGO_URI = "mongodb+srv://streamlined_admin:dH6sGxCCEVp1WOh8@cluster0.awmzrvc.mongodb.net/streamlinedDB?retryWrites=true&w=majority"
+.gitignore
