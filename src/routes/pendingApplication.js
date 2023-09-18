@@ -5,7 +5,7 @@ const PendingApplication = require("../models/pendingApplication");
 router.post("/", async (req, res) => {
   const editedData = req.body;
   try {
-    const editedProfileData = new Profiles(editedData);
+    const editedProfileData = new PendingApplication(editedData);
     const savedEditedData = await editedProfileData.save();
     res.status(201).json(savedEditedData);
   } catch (error) {
@@ -23,6 +23,17 @@ router.get("/:email", async (req, res) => {
     res.status(500).json(error);
   }
 });
+
+// get all pending application 
+router.get("/is_approved", async (req, res) => {
+  try {
+    const pendingData = await PendingApplication.find({isApproved: true});
+    res.status(200).json(pendingData);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 
 // change isApproved to true when admin approves application
 router.put("/approved/:email", async (req, res) => {

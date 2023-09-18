@@ -58,7 +58,7 @@ router.get("/check_admin/:email", async (req, res) => {
     //   return res.status(404).json({ message: "User not found" });
     // }
     const isAdmin = user.isAdmin;
-    console.log(isAdmin);
+    console.log("isAdmin: ", isAdmin);
     res.status(200).json({ isAdmin });
     
   } catch (error) {
