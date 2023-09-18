@@ -76,12 +76,12 @@ app.get('/profiles/:id', async (req, res) => {
   const options = {
     // Include only the `title` and `imdb` fields in the returned document
     projection: {
-     userId:1,userEmail:1,personal_data:1,identification_data:1,address_data:1,createdAt:1,updatedAt:1,__v:1
+      userId: 1, userEmail: 1, personal_data: 1, identification_data: 1, address_data: 1, createdAt: 1, updatedAt: 1, __v: 1
     },
   };
   const result = await profilesCollection.findOne(query, options);
   res.send(result);
-})
+});
 app.post('/profiles', async (req, res) => {
   const profiles = req.body;
   const query = { email: profiles.email }
