@@ -1,3 +1,4 @@
+
 const router = require("express").Router();
 const Users = require("../models/user");
 
@@ -60,7 +61,6 @@ router.get("/check_admin/:email", async (req, res) => {
     const isAdmin = user.isAdmin;
     console.log(isAdmin);
     res.status(200).json({ isAdmin });
-    
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
