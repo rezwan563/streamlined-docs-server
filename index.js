@@ -96,9 +96,11 @@ app.get('/profiles/:id', async (req, res) => {
 
 // });
 
+
+
 app.post('/profiles', async (req, res) => {
   const profile = req.body;
-
+  
   try {
     const result = await profilesCollection.insertOne(profile);
     res.send(result);
@@ -185,6 +187,7 @@ app.get('/approved_applications', async (req, res) => {
   const result = await approvedCollection.find().toArray();
   res.send(result);
 });
+
 app.delete('/approved_applications/:id', async (req, res) => {
   const id = req.params.id;
   const query = { _id: new ObjectId(id) };
