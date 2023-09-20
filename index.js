@@ -83,15 +83,17 @@ app.get('/profiles/:id', async (req, res) => {
   res.send(result);
 })
 app.post('/profiles', async (req, res) => {
-  const profiles = req.body;
-  const query = { email: profiles.email }
+  const user = req.body;
+  console.log(user);
+  const query = { userEmail: user.userEmail }
+  console.log(query);
   const existingProfile = await profilesCollection.findOne(query);
-
+  console.log(existingProfile);
   if (existingProfile) {
     return res.send({ message: 'profile already exists' })
   }
-
-  const result = await profilesCollection.insertOne(profiles);
+  
+  const result = await profilesCollection.insertOne(user);
   res.send(result);
 });
 app.patch('/profiles/:id', async (req, res) => {
