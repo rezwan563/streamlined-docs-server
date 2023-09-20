@@ -114,18 +114,13 @@ app.post('/profiles', async (req, res) => {
 //   }
 // });
 
-app.patch('/profiles/:id', async (req, res) => {
+app.put('/profiles/:id', async (req, res) => {
   const id = req.params.id;
   const filter = { _id: new ObjectId(id) };
   const updatedProfile = req.body;
-  console.log(updatedProfile);
-  const updateDoc = {
-    $set: {
-      status: updatedProfile.status
-    },
-  };
-  const result = await profilesCollection.updateOne(filter, updateDoc);
+  const result = await profilesCollection.replaceOne(filter,updatedProfile );
   res.send(result);
+ 
 })
 
 app.delete('/profiles/:id', async (req, res) => {
@@ -142,6 +137,7 @@ app.get('/pending_applications', async (req, res) => {
 });
 app.delete('/pending_applications/:id', async (req, res) => {
   const id = req.params.id;
+  console.log(id);
   const query = { _id: new ObjectId(id) };
   const result = await pendingCollection.deleteOne(query);
   res.send(result);
@@ -161,6 +157,7 @@ app.post('/pending_applications', async (req, res) => {
 
 app.get('/pending_applications/:id', async (req, res) => {
   const id = req.params.id;
+  console.log(id);
   const query = { _id: new ObjectId(id) }
 
   const options = {
@@ -208,7 +205,7 @@ app.post('/approved_applications', async (req, res) => {
     return res.send({ message: 'profile update request already sent' })
   }
   
-  const result = await pendingCollection.insertOne(approveddoc);
+  const result = await approvedCollection.insertOne(approveddoc);
   res.send(result);
 });
 app.get('/approved_applications/:id', async (req, res) => {
