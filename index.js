@@ -76,7 +76,7 @@ app.get('/profiles/:id', async (req, res) => {
   const options = {
     // Include only the `title` and `imdb` fields in the returned document
     projection: {
-     userId:1,userEmail:1,personal_data:1,identification_data:1,address_data:1,createdAt:1,updatedAt:1,__v:1
+      userId: 1, userEmail: 1, personal_data: 1, identification_data: 1, address_data: 1, createdAt: 1, updatedAt: 1, __v: 1
     },
   };
   const result = await profilesCollection.findOne(query, options);
@@ -96,6 +96,25 @@ app.post('/profiles', async (req, res) => {
   const result = await profilesCollection.insertOne(user);
   res.send(result);
 });
+
+
+// app.post('/profiles', async (req, res) => {
+//   const profile = req.body;
+
+//   try {
+//     const result = await profilesCollection.insertOne(profile);
+//     res.send(result);
+//   } catch (error) {
+//     if (error.code === 11000 && error.keyPattern.email === 1) {
+//       // Duplicate key error, which means a profile with the same email already exists
+//       res.status(400).json({ message: 'Profile with this email already exists' });
+//     } else {
+//       // Handle other errors
+//       res.status(500).json({ message: 'Internal server error' });
+//     }
+//   }
+// });
+
 app.patch('/profiles/:id', async (req, res) => {
   const id = req.params.id;
   const filter = { _id: new ObjectId(id) };
@@ -133,6 +152,7 @@ app.post('/pending_applications', async (req, res) => {
   const result = await pendingCollection.insertOne(profiles);
   res.send(result);
 });
+
 app.get('/pending_applications/:id', async (req, res) => {
   const id = req.params.id;
   const query = { _id: new ObjectId(id) }
@@ -140,13 +160,15 @@ app.get('/pending_applications/:id', async (req, res) => {
   const options = {
     // Include only the `title` and `imdb` fields in the returned document
     projection: {
-      userId:1,userEmail:1,personal_data:1,identification_data:1,address_data:1,isApproved:1,isRejected:1
+      userId: 1, userEmail: 1, personal_data: 1, identification_data: 1, address_data: 1, isApproved: 1, isRejected: 1
 
     },
   };
   const result = await pendingCollection.findOne(query, options);
   res.send(result);
-})
+});
+
+
 app.patch('/pending_applications/:id', async (req, res) => {
   const id = req.params.id;
   const filter = { _id: new ObjectId(id) };
@@ -159,7 +181,7 @@ app.patch('/pending_applications/:id', async (req, res) => {
   };
   const result = await pendingCollection.updateOne(filter, updateDoc);
   res.send(result);
-})
+});
 // approved docs get, add,delete
 app.get('/approved_applications', async (req, res) => {
   const result = await approvedCollection.find().toArray();
