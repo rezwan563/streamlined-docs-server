@@ -81,37 +81,37 @@ app.get('/profiles/:id', async (req, res) => {
   };
   const result = await profilesCollection.findOne(query, options);
   res.send(result);
+})
+app.post('/profiles', async (req, res) => {
+  const user = req.body;
+  const query = { userEmail: user.userEmail }
+  const existingProfile = await profilesCollection.findOne(query);
+ 
+  if (existingProfile) {
+    return res.send({ message: 'profile already exists' })
+  }
+  
+  const result = await profilesCollection.insertOne(user);
+  res.send(result);
 });
+
 
 // app.post('/profiles', async (req, res) => {
-//   const profiles = req.body;
-//   const query = { email: profiles.email }
-//   const existingProfile = await profilesCollection.findOne(query);
-//   if (existingProfile) {
-//     return res.send({ message: 'profile already exists' })
+//   const profile = req.body;
+
+//   try {
+//     const result = await profilesCollection.insertOne(profile);
+//     res.send(result);
+//   } catch (error) {
+//     if (error.code === 11000 && error.keyPattern.email === 1) {
+//       // Duplicate key error, which means a profile with the same email already exists
+//       res.status(400).json({ message: 'Profile with this email already exists' });
+//     } else {
+//       // Handle other errors
+//       res.status(500).json({ message: 'Internal server error' });
+//     }
 //   }
-
-//   const result = await profilesCollection.insertOne(profiles);
-//   res.send(result);
-
 // });
-
-app.post('/profiles', async (req, res) => {
-  const profile = req.body;
-
-  try {
-    const result = await profilesCollection.insertOne(profile);
-    res.send(result);
-  } catch (error) {
-    if (error.code === 11000 && error.keyPattern.email === 1) {
-      // Duplicate key error, which means a profile with the same email already exists
-      res.status(400).json({ message: 'Profile with this email already exists' });
-    } else {
-      // Handle other errors
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  }
-});
 
 app.patch('/profiles/:id', async (req, res) => {
   const id = req.params.id;
@@ -146,8 +146,15 @@ app.delete('/pending_applications/:id', async (req, res) => {
   res.send(result);
 })
 app.post('/pending_applications', async (req, res) => {
-  const profiles = req.body; 
-  const result = await pendingCollection.insertOne(profiles);
+  const pendingdoc = req.body;
+  const query = { userEmail: pendingdoc.userEmail }
+  const existingProfile = await pendingCollection.findOne(query);
+ 
+  if (existingProfile) {
+    return res.send({ message: 'profile update request already sent' })
+  }
+  
+  const result = await pendingCollection.insertOne(pendingdoc);
   res.send(result);
 });
 
