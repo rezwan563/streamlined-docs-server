@@ -24,17 +24,27 @@ router.get("/:email", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 // get all pending application 
 router.get("/is_approved", async (req, res) => {
   try {
     const pendingData = await PendingApplication.find({isApproved: true});
     res.status(200).json(pendingData);
+=======
+router.get("/approved", async (req, res) => {
+  try {
+    const approvedData = await PendingApplication.find({ isApproved: false });
+    res.status(200).json(approvedData);
+>>>>>>> f3a93338b54838884a8326abdc0336a1792694e4
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f3a93338b54838884a8326abdc0336a1792694e4
 // change isApproved to true when admin approves application
 router.put("/approved/:email", async (req, res) => {
   try {
