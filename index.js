@@ -84,11 +84,9 @@ app.get('/profiles/:id', async (req, res) => {
 })
 app.post('/profiles', async (req, res) => {
   const user = req.body;
-  console.log(user);
   const query = { userEmail: user.userEmail }
-  console.log(query);
   const existingProfile = await profilesCollection.findOne(query);
-  console.log(existingProfile);
+ 
   if (existingProfile) {
     return res.send({ message: 'profile already exists' })
   }
@@ -148,8 +146,15 @@ app.delete('/pending_applications/:id', async (req, res) => {
   res.send(result);
 })
 app.post('/pending_applications', async (req, res) => {
-  const profiles = req.body; 
-  const result = await pendingCollection.insertOne(profiles);
+  const pendingdoc = req.body;
+  const query = { userEmail: pendingdoc.userEmail }
+  const existingProfile = await pendingCollection.findOne(query);
+ 
+  if (existingProfile) {
+    return res.send({ message: 'profile update request already sent' })
+  }
+  
+  const result = await pendingCollection.insertOne(pendingdoc);
   res.send(result);
 });
 
