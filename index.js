@@ -24,6 +24,7 @@ const usersCollection = client.db("streamlinedDB").collection("users");
 const profilesCollection = client.db("streamlinedDB").collection("profiles");
 const pendingCollection = client.db("streamlinedDB").collection("pendingapplications");
 const approvedCollection = client.db("streamlinedDB").collection("approvedapplications");
+const reviewedCollection = client.db("streamlinedDB").collection("reviewed_applications");
 
 //user get,post,delete methods
 app.get('/users', async (req, res) => {
@@ -113,18 +114,13 @@ app.post('/profiles', async (req, res) => {
 //   }
 // });
 
-app.patch('/profiles/:id', async (req, res) => {
+app.put('/profiles/:id', async (req, res) => {
   const id = req.params.id;
   const filter = { _id: new ObjectId(id) };
   const updatedProfile = req.body;
-  console.log(updatedProfile);
-  const updateDoc = {
-    $set: {
-      status: updatedProfile.status
-    },
-  };
-  const result = await profilesCollection.updateOne(filter, updateDoc);
+  const result = await profilesCollection.replaceOne(filter,updatedProfile );
   res.send(result);
+ 
 })
 
 app.delete('/profiles/:id', async (req, res) => {
@@ -141,6 +137,7 @@ app.get('/pending_applications', async (req, res) => {
 });
 app.delete('/pending_applications/:id', async (req, res) => {
   const id = req.params.id;
+  console.log(id);
   const query = { _id: new ObjectId(id) };
   const result = await pendingCollection.deleteOne(query);
   res.send(result);
@@ -160,6 +157,7 @@ app.post('/pending_applications', async (req, res) => {
 
 app.get('/pending_applications/:id', async (req, res) => {
   const id = req.params.id;
+  console.log(id);
   const query = { _id: new ObjectId(id) }
 
   const options = {
@@ -199,8 +197,15 @@ app.delete('/approved_applications/:id', async (req, res) => {
   res.send(result);
 })
 app.post('/approved_applications', async (req, res) => {
-  const profiles = req.body; 
-  const result = await approvedCollection.insertOne(profiles);
+  const approveddoc = req.body;
+  const query = { userEmail: approveddoc.userEmail }
+  const existingProfile = await approvedCollection.findOne(query);
+ 
+  if (existingProfile) {
+    return res.send({ message: 'profile update request already sent' })
+  }
+  
+  const result = await approvedCollection.insertOne(approveddoc);
   res.send(result);
 });
 app.get('/approved_applications/:id', async (req, res) => {
@@ -228,6 +233,56 @@ app.patch('/approved_applications/:id', async (req, res) => {
     },
   };
   const result = await approvedCollection.updateOne(filter, updateDoc);
+  res.send(result);
+})
+// reviewed docs get, add,delete
+app.get('/reviewed_applications', async (req, res) => {
+  const result = await reviewedCollection.find().toArray();
+  res.send(result);
+});
+app.delete('/reviewed_applications/:id', async (req, res) => {
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) };
+  const result = await reviewedCollection.deleteOne(query);
+  res.send(result);
+})
+app.post('/reviewed_applications', async (req, res) => {
+  const approveddoc = req.body;
+  const query = { userEmail: approveddoc.userEmail }
+  const existingProfile = await reviewedCollection.findOne(query);
+ 
+  if (existingProfile) {
+    return res.send({ message: 'profile update request already sent' })
+  }
+  
+  const result = await reviewedCollection.insertOne(approveddoc);
+  res.send(result);
+});
+app.get('/reviewed_applications/:id', async (req, res) => {
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) }
+
+  const options = {
+    // Include only the `title` and `imdb` fields in the returned document
+    projection: {
+      userId:1,userEmail:1,personal_data:1,identification_data:1,address_data:1,isApproved:1,isRejected:1
+
+    },
+  };
+  const result = await reviewedCollection.findOne(query, options);
+  res.send(result);
+})
+app.patch('/reviewed_applications/:id', async (req, res) => {
+  const id = req.params.id;
+  const filter = { _id: new ObjectId(id) };
+  const updatedProfile = req.body;
+  console.log(updatedProfile);
+  const updateDoc = {
+    $set: {
+      status: updatedProfile.status
+    },
+  };
+  const result = await reviewedCollection.updateOne(filter, updateDoc);
   res.send(result);
 })
 
